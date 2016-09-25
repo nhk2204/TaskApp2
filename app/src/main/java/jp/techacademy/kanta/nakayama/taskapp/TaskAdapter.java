@@ -7,20 +7,23 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by nhk2204 on 2016/09/22.
  */
 public class TaskAdapter extends BaseAdapter {
     private LayoutInflater mLayoutInflater;
-    private ArrayList<String> mTaskArrayList;
+    private ArrayList<Task> mTaskArrayList;
 
     public TaskAdapter(Context context){
         mLayoutInflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void setTaskArrayList(ArrayList<String> taskArrayList){
+    public void setTaskArrayList(ArrayList<Task> taskArrayList){
         mTaskArrayList=taskArrayList;
     }
 
@@ -39,7 +42,7 @@ public class TaskAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         //アイテム（データ）のidを返す。
-        return 0;
+        return mTaskArrayList.get(position).getId();
     }
 
     @Override
@@ -52,8 +55,12 @@ public class TaskAdapter extends BaseAdapter {
         TextView textView1=(TextView)convertView.findViewById(android.R.id.text1);
         TextView textView2=(TextView)convertView.findViewById(android.R.id.text2);
 
-        //あとでTaskクラスから情報を取得するように変更する。
-        textView1.setText(mTaskArrayList.get(position));
-        return null;
+        textView1.setText(mTaskArrayList.get(position).getTitle());
+
+        SimpleDateFormat simpleDataFormat =new SimpleDateFormat("yyyy-MM-dd HH:MM", Locale.JAPANESE);
+        Date date=mTaskArrayList.get(position).getDate();
+        textView2.setText(simpleDataFormat.format(date));
+
+        return convertView;
     }
 }
