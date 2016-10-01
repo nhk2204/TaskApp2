@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by nhk2204 on 2016/09/22.
@@ -14,6 +15,7 @@ public class Task extends RealmObject implements Serializable{
     private Date date;  //日時
 
     //idをプライマリキーとして設定
+    @PrimaryKey
     private int id;
 
     public String getTitle() {
