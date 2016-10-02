@@ -174,3 +174,4 @@ public class InputActivity extends AppCompatActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),resultPendingIntent);
     }
 }
+

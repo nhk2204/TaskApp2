@@ -21,7 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".InputActivity"
             android:label="タスク"
@@ -31,8 +30,18 @@
                 android:name="android.support.PAREN_ACTIVITY"
                 android:value="jp.techacademy.kanta.nakayama.taskapp.MainActivity" />
         </activity>
+        <activity
+            android:name=".CategoryActivity"
+            android:label="カテゴリ"
+            android:parentActivityName=".InputActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PAREN_ACTIVITY"
+                android:value="jp.techacademy.kanta.nakayama.taskapp.InputActivity" />
+        </activity>
 
         <receiver android:name=".TaskAlarmReceiver" />
+
     </application>
 
 </manifest>
