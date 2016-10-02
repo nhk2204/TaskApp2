@@ -8,10 +8,30 @@
     android:fitsSystemWindows="true"
     tools:context="jp.techacademy.kanta.nakayama.taskapp.MainActivity">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="絞り込みたいカテゴリを入力してください。"
+        android:id="@+id/search_text"/>
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_button"
+        android:text="絞込み"
+        android:layout_marginTop="45dp"/>
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/return_button"
+        android:text="戻る"
+        android:layout_marginTop="45dp"
+        android:layout_marginLeft="200dp"/>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/listView1"
+        android:layout_marginTop="90dp"
     />
 
     <android.support.design.widget.FloatingActionButton

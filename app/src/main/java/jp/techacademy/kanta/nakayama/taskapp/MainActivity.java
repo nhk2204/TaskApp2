@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -44,6 +46,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //「絞込み」ボタンを押したときの動作
+        Button searchButton=(Button)findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadSearchListView();
+            }
+        });
+
+        //「戻る」ボタンを押したときの動作
+        Button returnButton=(Button)findViewById(R.id.return_button);
+        returnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadListView();
+            }
+        });
+
+        //「+」ボタンを押したときの動作（タスクの追加）
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,11 +151,37 @@ public class MainActivity extends AppCompatActivity {
             task.setId(mTaskRealmResults.get(i).getId());
             task.setTitle(mTaskRealmResults.get(i).getTitle());
             task.setContents(mTaskRealmResults.get(i).getContents());
+            task.setCategory(mTaskRealmResults.get(i).getCategory());
             task.setDate(mTaskRealmResults.get(i).getDate());
 
             taskArrayList.add(task);
         }
         mTaskAdapter.setTaskArrayList(taskArrayList);
+        mListView.setAdapter(mTaskAdapter);
+        mTaskAdapter.notifyDataSetChanged();
+    }
+
+    private void reloadSearchListView(){
+        ArrayList<Task> searchTaskArrayList=new ArrayList<>();
+        EditText searchCategoryEditText=(EditText)findViewById(R.id.search_text);
+        String searchCategory=searchCategoryEditText.getText().toString();
+        String compareCategory;
+
+        for(int i=0;i<mTaskRealmResults.size();i++){
+            compareCategory=mTaskRealmResults.get(i).getCategory();
+            if(compareCategory.equals(searchCategory)) {
+                Task task = new Task();
+
+                task.setId(mTaskRealmResults.get(i).getId());
+                task.setTitle(mTaskRealmResults.get(i).getTitle());
+                task.setContents(mTaskRealmResults.get(i).getContents());
+                task.setCategory(mTaskRealmResults.get(i).getCategory());
+                task.setDate(mTaskRealmResults.get(i).getDate());
+
+                searchTaskArrayList.add(task);
+            }
+        }
+        mTaskAdapter.setTaskArrayList(searchTaskArrayList);
         mListView.setAdapter(mTaskAdapter);
         mTaskAdapter.notifyDataSetChanged();
     }

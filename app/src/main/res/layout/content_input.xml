@@ -24,11 +24,17 @@
         android:id="@+id/content_edit_text"
         android:layout_below="@id/title_edit_text"
         android:hint="内容"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/category_edit_text"
+        android:layout_below="@+id/content_edit_text"
+        android:hint="カテゴリ"/>
     <Button
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/date_button"
-        android:layout_below="@id/content_edit_text"
+        android:layout_below="@id/category_edit_text"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/times_button"
         android:text="----/--/--"
@@ -36,7 +42,7 @@
     <Button
         android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/content_edit_text"
+        android:layout_below="@id/category_edit_text"
         android:id="@id/times_button"
         android:layout_alignParentRight="true"
         android:text="--:--"
