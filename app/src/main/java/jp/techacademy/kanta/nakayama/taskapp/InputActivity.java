@@ -24,9 +24,10 @@ import io.realm.RealmResults;
 public class InputActivity extends AppCompatActivity {
 
     private int mYear,mMonth,mDay,mHour,mMinute;
-    private Button mDateButton,mTimeButton;
-    private EditText mTitleEdit,mContentEdit,mCategoryEdit;
+    private Button mDateButton,mTimeButton,mCategoryButton;
+    private EditText mTitleEdit,mContentEdit;
     private Task mTask;
+    private Category mCategory;
 
     //input画面で年月日ボタンを押した際の動作（年月日の選択）
     private View.OnClickListener mOnDateClickListener=new View.OnClickListener(){
@@ -72,6 +73,15 @@ public class InputActivity extends AppCompatActivity {
         }
     };
 
+    private View.OnClickListener mOnCategoryClickListener= new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(InputActivity.this, CategoryActivity.class);
+            intent.putExtra("CATEGORY", mCategory);
+            startActivity(intent);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,11 +102,13 @@ public class InputActivity extends AppCompatActivity {
         findViewById(R.id.done_button).setOnClickListener(mOnDoneClickListener);
         mTitleEdit=(EditText)findViewById(R.id.title_edit_text);
         mContentEdit=(EditText)findViewById(R.id.content_edit_text);
-        mCategoryEdit=(EditText)findViewById(R.id.category_edit_text);
+        mCategoryButton=(Button)findViewById(R.id.category_button);
+        mCategoryButton.setOnClickListener(mOnCategoryClickListener);
 
         //Intent
         Intent intent=getIntent();
         mTask=(Task)intent.getSerializableExtra(MainActivity.EXTRA_TASK);
+        mCategory=(Category)intent.getSerializableExtra(CategoryActivity.EXTRA_CATEGORY);
 
         if(mTask==null){
             //新規作成の場合
@@ -111,7 +123,6 @@ public class InputActivity extends AppCompatActivity {
             //更新の場合
             mTitleEdit.setText(mTask.getTitle());
             mContentEdit.setText(mTask.getContents());
-            mCategoryEdit.setText(mTask.getCategory());
 
             Calendar calendar=Calendar.getInstance();
             calendar.setTime(mTask.getDate());
@@ -125,6 +136,13 @@ public class InputActivity extends AppCompatActivity {
             String timeString=String.format("%02d",mHour)+":"+String.format("%02d",mMinute);
             mDateButton.setText(dateString);
             mTimeButton.setText(timeString);
+
+            //Categoryがnullの場合
+            if(mTask.getCategory()==null){
+                mCategoryButton.setText("カテゴリを入力してください");
+            }else {
+                mCategoryButton.setText(mTask.getCategory().categoryName);
+            }
         }
     }
 
@@ -147,7 +165,7 @@ public class InputActivity extends AppCompatActivity {
 
         String title=mTitleEdit.getText().toString();
         String content=mContentEdit.getText().toString();
-        String category=mCategoryEdit.getText().toString();
+        Category category=mTask.getCategory();
 
         mTask.setTitle(title);
         mTask.setContents(content);

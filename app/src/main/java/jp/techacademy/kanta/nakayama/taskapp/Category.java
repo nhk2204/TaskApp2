@@ -17,10 +17,10 @@ public class Category extends RealmObject implements Serializable{
     //カテゴリ
     String categoryName;
 
-    public void setCategory(String categoryName){
+    public void setCategoryName(String categoryName){
         this.categoryName=categoryName;
     }
-    public String getCategory(){
+    public String getCategoryName(){
         return categoryName;
     }
 

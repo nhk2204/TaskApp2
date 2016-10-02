@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         String compareCategory;
 
         for(int i=0;i<mTaskRealmResults.size();i++){
-            compareCategory=mTaskRealmResults.get(i).getCategory();
+            compareCategory=mTaskRealmResults.get(i).getCategory().categoryName;
             if(compareCategory.equals(searchCategory)) {
                 Task task = new Task();
 
