@@ -110,6 +110,10 @@ public class InputActivity extends AppCompatActivity {
         mTask=(Task)intent.getSerializableExtra(MainActivity.EXTRA_TASK);
         mCategory=(Category)intent.getSerializableExtra(CategoryActivity.EXTRA_CATEGORY);
 
+        if(mCategory!=null){
+            mCategoryButton.setText(mCategory.getCategoryName());
+        }
+
         if(mTask==null){
             //新規作成の場合
             Calendar calendar=Calendar.getInstance();
@@ -136,13 +140,7 @@ public class InputActivity extends AppCompatActivity {
             String timeString=String.format("%02d",mHour)+":"+String.format("%02d",mMinute);
             mDateButton.setText(dateString);
             mTimeButton.setText(timeString);
-
-            //Categoryがnullの場合
-            if(mTask.getCategory()==null){
-                mCategoryButton.setText("カテゴリを入力してください");
-            }else {
-                mCategoryButton.setText(mTask.getCategory().categoryName);
-            }
+            mCategoryButton.setText(mTask.getCategory().categoryName);
         }
     }
 
@@ -165,7 +163,11 @@ public class InputActivity extends AppCompatActivity {
 
         String title=mTitleEdit.getText().toString();
         String content=mContentEdit.getText().toString();
-        Category category=mTask.getCategory();
+
+        Category category=null;
+        if(mCategory!=null) {
+            category = mCategory;
+        }
 
         mTask.setTitle(title);
         mTask.setContents(content);

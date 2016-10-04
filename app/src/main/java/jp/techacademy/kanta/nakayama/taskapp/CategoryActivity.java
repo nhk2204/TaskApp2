@@ -1,13 +1,17 @@
 package jp.techacademy.kanta.nakayama.taskapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -33,12 +37,20 @@ public class CategoryActivity extends AppCompatActivity {
     private ListView mListView;
     private CategoryAdapter mCategoryAdapter;
 
+    private Category mCategory;
+
+    private Button mButton;
+    private EditText mCategoryEdit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent intent=getIntent();
+        mCategory=(Category)intent.getSerializableExtra(CategoryActivity.EXTRA_CATEGORY);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         //fab.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +76,11 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //入力・編集する画面に推移する（InputActivityに移動）
+                Category category=(Category)parent.getAdapter().getItem(position);
+
+                Intent intent=new Intent(CategoryActivity.this,InputActivity.class);
+                intent.putExtra(EXTRA_CATEGORY,category);
+                startActivity(intent);
             }
         });
 
@@ -72,7 +89,54 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 //Categoryを削除する。
-                return false;
+
+                final Category category=(Category)parent.getAdapter().getItem(position);
+
+                //ダイアログを表示させる。
+                AlertDialog.Builder builder=new AlertDialog.Builder(CategoryActivity.this);
+
+                builder.setTitle("削除");
+                builder.setMessage(category.getCategoryName()+"を削除しますか？");
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        RealmResults<Category> results=categoryRealm.where(Category.class).equalTo("id",category.getId()).findAll();
+
+                        categoryRealm.beginTransaction();
+                        results.clear();
+                        categoryRealm.commitTransaction();
+
+                        reloadListView();
+                    }
+                });
+                builder.setNegativeButton("CANCEL",null);
+
+                AlertDialog dialog=builder.create();
+                dialog.show();
+
+                return true;
+            }
+        });
+
+        //作成ボタンを押したときの処理
+        mButton=(Button)findViewById(R.id.category_button);
+        mCategoryEdit=(EditText)findViewById(R.id.category_edit);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //新しいカテゴリを作成する。
+                if(mCategoryEdit.getText().toString().equals("")){
+                    AlertDialog.Builder builder=new AlertDialog.Builder(CategoryActivity.this);
+                    builder.setTitle("ERROR");
+                    builder.setMessage("カテゴリを入力してください");
+
+                    AlertDialog dialog=builder.create();
+                    dialog.show();
+                }else{
+                    addCategory();
+                    //finish();
+                }
             }
         });
 
@@ -114,6 +178,31 @@ public class CategoryActivity extends AppCompatActivity {
         categoryRealm.beginTransaction();
         categoryRealm.copyToRealmOrUpdate(category);
         categoryRealm.commitTransaction();
+    }
+
+    private void addCategory(){
+        Realm realm=Realm.getDefaultInstance();
+        if(mCategory==null){
+            mCategory=new Category();
+            RealmResults<Category>categoryRealmResults=realm.where(Category.class).findAll();
+
+            int identifier;
+            if(categoryRealmResults.max("id")!=null){
+                identifier=categoryRealmResults.max("id").intValue()+1;
+            }else{
+                identifier=0;
+            }
+            mCategory.setId(identifier);
+        }
+
+        String categoryName=mCategoryEdit.getText().toString();
+        mCategory.setCategoryName(categoryName);
+
+        realm.beginTransaction();;
+        realm.copyToRealmOrUpdate(mCategory);
+        realm.commitTransaction();
+
+        realm.close();
     }
 
 }
